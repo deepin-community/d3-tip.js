@@ -1,4 +1,18 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
 %:
 	dh $@
+
+override_dh_auto_build:
+	rollup --bundleConfigAsCjs -c rollup.conf.js
+	cp dist/index.js d3-tip.js
+	uglifyjs d3-tip.js -c -m -o d3-tip.min.js
+	cp examples/example-styles.css d3-tip.css
+	cp d3-tip.css d3-tip.min.css
+
+execute_after_dh_auto_clean:
+	rm -f d3-tip*
