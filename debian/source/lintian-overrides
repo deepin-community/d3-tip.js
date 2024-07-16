@@ -1,0 +1,2 @@
+# These are false positives
+d3-tip.js source: source-is-missing [examples/*.html]

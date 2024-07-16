@@ -1,0 +1,31 @@
+Description: Make uglifyjs options a make variable.
+ This make it possible to disable the uglifyjs step in debian/rules
+ by replacing it with /bin/cat.  With version 0.9.0, the index.js file
+ was no longer recognized by uglifyjs version 2.8.29.  This is the error:
+
+   Parse error at index.js:8,7
+   import { map } from 'd3-collection'
+          ^
+   SyntaxError: Unexpected token: punc ({)
+
+ The workaround selected was to drop the uglifyjs step.
+Author: Petter Reinholdtsen <pere@debian.org>
+Forwarded: not-needed
+Reviewed-By: Petter Reinholdtsen <pere@debian.org>
+Last-Update: 2023-11-14
+
+--- d3-tip.js-0.9.1.orig/Makefile
++++ d3-tip.js-0.9.1/Makefile
+@@ -1,10 +1,11 @@
+ UGLIFYJS = node_modules/uglify-js/bin/uglifyjs
++UGLIFYJSARGS = -c -m
+ UGLIFYCSS = node_modules/uglifycss/uglifycss
+ 
+ all: d3-tip.min.js d3-tip.min.css
+ 
+ d3-tip.min.js: index.js uglifyjs
+-	$(UGLIFYJS) $< -c -m -o $@
++	$(UGLIFYJS) $(UGLIFYJSARGS) $< > $@
+ 
+ d3-tip.min.css: examples/example-styles.css uglifycss
+ 	$(UGLIFYCSS) $< > $@
